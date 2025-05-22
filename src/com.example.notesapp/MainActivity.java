@@ -87,7 +87,6 @@ protected void onCreate(@Nullable Bundle savedInstanceState) {
 
     FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
     fabAdd.setOnClickListener(v -> showCreateNoteDialog());
-}
  {
             @Override
             public void onClick(View view) {
