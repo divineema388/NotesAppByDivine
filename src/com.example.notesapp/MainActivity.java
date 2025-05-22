@@ -55,62 +55,66 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter adapter;
     private ArrayList<Note> notesList;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+   @Override
+protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+    DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+    NavigationView navigationView = findViewById(R.id.nav_view);
+    MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
-            drawerLayout.closeDrawers();
+    // Setup toolbar navigation icon click to open drawer
+    topAppBar.setNavigationOnClickListener(v -> {
+        drawerLayout.openDrawer(GravityCompat.START);
+    });
 
-            int id = menuItem.getItemId();
-            if (id == R.id.nav_settings) {
-                showSettingsDialog();
-                return true;
-            } else if (id == R.id.nav_about) {
-                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (id == R.id.nav_thanks) {
-                openGmailApp(); // Call the method here
-                return true;
-            }
-            return false;
-        });
-    }
+    // Handle navigation item clicks
+    navigationView.setNavigationItemSelectedListener(menuItem -> {
+        drawerLayout.closeDrawers();
+
+        int id = menuItem.getItemId();
+        if (id == R.id.nav_settings) {
+            showSettingsDialog();
+            return true;
+        } else if (id == R.id.nav_about) {
+            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_thanks) {
+            openGmailApp();  // Call to your gmail intent method
+            return true;
+        }
+        return false;
+    });
+
+    recyclerView = findViewById(R.id.recyclerViewNotes);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    notesList = new ArrayList<>();
+    loadNotes();
+
+    adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
+    recyclerView.setAdapter(adapter);
+
+    FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
+    fabAdd.setOnClickListener(v -> showCreateNoteDialog());
 }
 
-    private void openGmailApp() {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-        emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Your message goes here."); // Optional: add a message body
+// Place the gmail intent method anywhere inside MainActivity class but outside onCreate
+private void openGmailApp() {
+    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+    emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
+    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
+    emailIntent.putExtra(Intent.EXTRA_TEXT, "Your message goes here."); // Optional: add a message body
 
-        // Check if there is an email client available
-        if (emailIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(emailIntent);
-        } else {
-            // Handle the case where no email client is installed
-            Toast.makeText(this, "No email client installed.", Toast.LENGTH_SHORT).show();
-        }
+    // Check if there is an email client available
+    if (emailIntent.resolveActivity(getPackageManager()) != null) {
+        startActivity(emailIntent);
+    } else {
+        Toast.makeText(this, "No email client installed.", Toast.LENGTH_SHORT).show();
     }
-
-        // RecyclerView setup
-        recyclerView = findViewById(R.id.recyclerViewNotes);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        notesList = new ArrayList<>();
-        loadNotes();
-
-        adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
-        recyclerView.setAdapter(adapter);
-
-        FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
-        fabAdd.setOnClickListener(v -> showCreateNoteDialog()); // Corrected here
-    }
+}
 
     private void showCreateNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
