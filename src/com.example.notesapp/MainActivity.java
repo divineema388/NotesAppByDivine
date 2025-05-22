@@ -50,8 +50,11 @@ import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FrameLayout rootLayout;
+    private  private FrameLayout rootLayout;
     private BackgroundAnimator backgroundAnimator;
+    private RecyclerView recyclerView; // Declare RecyclerView
+    private NotesAdapter adapter; // Declare Adapter
+    private ArrayList<Note> notesList; // Declare Notes List
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
