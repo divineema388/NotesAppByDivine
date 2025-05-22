@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
     return false;
 });
+}
+
 private void openGmailApp() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
