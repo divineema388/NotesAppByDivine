@@ -123,11 +123,33 @@ public class MainActivity extends AppCompatActivity {
 private void showSettingsDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle("Settings");
-    // Add settings options or info here, for now simple message
-    builder.setMessage("Settings will be available soon.");
-    builder.setPositiveButton("OK", null);
+
+    // Create a layout for the dialog
+    View dialogView = getLayoutInflater().inflate(R.layout.dialog_settings, null);
+    builder.setView(dialogView);
+
+    // Find the Switch for Dark Theme
+    SwitchCompat switchDarkTheme = dialogView.findViewById(R.id.switchDarkTheme);
+    switchDarkTheme.setChecked(isDarkThemeEnabled()); // Set initial state
+
+    // Set listener for the switch
+    switchDarkTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        if (isChecked) {
+            setDarkTheme();
+        } else {
+            setLightTheme();
+        }
+    });
+
+    // Add a button to rename notes
+    builder.setPositiveButton("Rename Notes", (dialog, which) -> {
+        showRenameNotesDialog();
+    });
+
+    builder.setNegativeButton("Close", null);
     builder.show();
 }
+
 
 private void showAboutDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -136,6 +158,51 @@ private void showAboutDialog() {
     builder.setPositiveButton("OK", null);
     builder.show();
 }
+
+private void showRenameNotesDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Rename Notes");
+
+    final EditText input = new EditText(this);
+    input.setInputType(InputType.TYPE_CLASS_TEXT);
+    input.setHint("Enter new name for your notes");
+    builder.setView(input);
+
+    builder.setPositiveButton("Rename", (dialog, which) -> {
+        String newName = input.getText().toString();
+        if (!newName.isEmpty()) {
+            // Logic to rename notes (you can implement this based on your requirements)
+            Toast.makeText(this, "Notes renamed to: " + newName, Toast.LENGTH_SHORT).show();
+        }
+    });
+
+    builder.setNegativeButton("Cancel", null);
+    builder.show();
+}
+
+ 
+ private boolean isDarkThemeEnabled() {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    return sharedPreferences.getBoolean("dark_theme", false);
+}
+
+private void setDarkTheme() {
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    saveThemePreference(true);
+}
+
+private void setLightTheme() {
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    saveThemePreference(false);
+}
+
+private void saveThemePreference(boolean isDark) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.putBoolean("dark_theme", isDark);
+    editor.apply();
+}
+
 
     private void showEditNoteDialog(final int position) {
     Note note = notesList.get(position);
