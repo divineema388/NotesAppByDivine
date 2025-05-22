@@ -119,10 +119,6 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    // Other methods remain unchanged...
-}
-
-
 private void showSettingsDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle("Settings");
