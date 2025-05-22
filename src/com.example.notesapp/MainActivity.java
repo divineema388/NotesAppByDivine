@@ -1,6 +1,6 @@
 package com.example.notesapp;
 
-
+import android.content.Intent; // For Intent
 import androidx.appcompat.app.AppCompatDelegate; // For AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat; // For SwitchCompat
 import android.content.SharedPreferences; // For SharedPreferences
