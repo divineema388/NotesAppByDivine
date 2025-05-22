@@ -84,7 +84,11 @@ protected void onCreate(@Nullable Bundle savedInstanceState) {
         } else if (id == R.id.nav_thanks) {
             openGmailApp();  // Call to your gmail intent method
             return true;
-        }
+        } else if (id == R.id.nav_source) {
+    Intent intent = new Intent(MainActivity.this, SourceActivity.class);
+    startActivity(intent);
+    return true;
+}
         return false;
     });
 
