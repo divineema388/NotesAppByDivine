@@ -1,5 +1,6 @@
 package com.example.notesapp;
 
+import android.widget.FrameLayout;
 import android.content.Intent; // For Intent
 import androidx.appcompat.app.AppCompatDelegate; // For AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat; // For SwitchCompat
@@ -49,76 +50,85 @@ import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String FILE_NAME = "noteContent.txt";
+    private FrameLayout rootLayout;
+    private BackgroundAnimator backgroundAnimator;
 
-    private RecyclerView recyclerView;
-    private NotesAdapter adapter;
-    private ArrayList<Note> notesList;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-   @Override
-protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+        rootLayout = findViewById(R.id.rootLayout);
 
-    DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-    NavigationView navigationView = findViewById(R.id.nav_view);
-    MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        backgroundAnimator = new BackgroundAnimator();
+        backgroundAnimator.startBackgroundAnimation(rootLayout);
 
-    // Setup toolbar navigation icon click to open drawer
-    topAppBar.setNavigationOnClickListener(v -> {
-        drawerLayout.openDrawer(GravityCompat.START);
-    });
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-    // Handle navigation item clicks
-    navigationView.setNavigationItemSelectedListener(menuItem -> {
-        drawerLayout.closeDrawers();
+        // Setup toolbar navigation icon click to open drawer
+        topAppBar.setNavigationOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
 
-        int id = menuItem.getItemId();
-        if (id == R.id.nav_settings) {
-            showSettingsDialog();
-            return true;
-        } else if (id == R.id.nav_about) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == R.id.nav_thanks) {
-            openGmailApp();  // Call to your gmail intent method
-            return true;
-        } else if (id == R.id.nav_source) {
-    Intent intent = new Intent(MainActivity.this, SourceActivity.class);
-    startActivity(intent);
-    return true;
-}
-        return false;
-    });
+        // Handle navigation item clicks
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            drawerLayout.closeDrawers();
 
-    recyclerView = findViewById(R.id.recyclerViewNotes);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            int id = menuItem.getItemId();
+            if (id == R.id.nav_settings) {
+                showSettingsDialog();
+                return true;
+            } else if (id == R.id.nav_about) {
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (id == R.id.nav_thanks) {
+                openGmailApp();
+                return true;
+            } else if (id == R.id.nav_source) {
+                Intent intent = new Intent(MainActivity.this, SourceActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            return false;
+        });
 
-    notesList = new ArrayList<>();
-    loadNotes();
+        recyclerView = findViewById(R.id.recyclerViewNotes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
-    recyclerView.setAdapter(adapter);
+        notesList = new ArrayList<>();
+        loadNotes();
 
-    FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
-    fabAdd.setOnClickListener(v -> showCreateNoteDialog());
-}
+        adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
+        recyclerView.setAdapter(adapter);
 
-// Place the gmail intent method anywhere inside MainActivity class but outside onCreate
-private void openGmailApp() {
-    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-    emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
-    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
-    emailIntent.putExtra(Intent.EXTRA_TEXT, "Your message goes here."); // Optional: add a message body
-
-    // Check if there is an email client available
-    if (emailIntent.resolveActivity(getPackageManager()) != null) {
-        startActivity(emailIntent);
-    } else {
-        Toast.makeText(this, "No email client installed.", Toast.LENGTH_SHORT).show();
+        FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
+        fabAdd.setOnClickListener(v -> showCreateNoteDialog());
     }
-}
+
+    @Override
+    protected void onDestroy() {
+        if (backgroundAnimator != null) {
+            backgroundAnimator.stopBackgroundAnimation();
+        }
+        super.onDestroy();
+    }
+
+    private void openGmailApp() {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Your message goes here.");
+
+        if (emailIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(emailIntent);
+        } else {
+            Toast.makeText(this, "No email client installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void showCreateNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
