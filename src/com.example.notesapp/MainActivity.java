@@ -60,39 +60,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
-        // Setup toolbar navigation icon click to open drawer
-        topAppBar.setNavigationOnClickListener(v -> {
-            drawerLayout.openDrawer(GravityCompat.START);
-        });
-
-        // Handle navigation item clicks
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-    drawerLayout.closeDrawers();
+            drawerLayout.closeDrawers();
 
-    int id = menuItem.getItemId();
-    if (id == R.id.nav_settings) {
-        showSettingsDialog();
-        return true;
-    } else if (id == R.id.nav_about) {
-        // <-- Place the code here:
-        Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-        startActivity(intent);
-        return true;
-    }      }
-    return true;else if (id == R.id.nav_thanks) {
+            int id = menuItem.getItemId();
+            if (id == R.id.nav_settings) {
+                showSettingsDialog();
+                return true;
+            } else if (id == R.id.nav_about) {
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (id == R.id.nav_thanks) {
                 openGmailApp(); // Call the method here
                 return true;
+            }
+            return false;
+        });
+    }
 }
 
-    return false;
-});
-}
-
-private void openGmailApp() {
+    private void openGmailApp() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
