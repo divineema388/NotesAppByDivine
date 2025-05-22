@@ -1,5 +1,10 @@
 package com.example.notesapp;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.appbar.MaterialToolbar;
+import android.view.MenuItem;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface; // Add this line
@@ -38,28 +43,52 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter adapter;
     private ArrayList<Note> notesList;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+@Override
+protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerViewNotes);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+    NavigationView navigationView = findViewById(R.id.nav_view);
+    MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-        notesList = new ArrayList<>();
-        loadNotes();
+    // Setup toolbar navigation icon click to open drawer
+    topAppBar.setNavigationOnClickListener(v -> {
+        drawerLayout.openDrawer(GravityCompat.START);
+    });
 
-        adapter = new NotesAdapter(notesList, new NotesAdapter.OnNoteClickListener() {
-            @Override
-            public void onNoteClick(int position) {
-                showEditNoteDialog(position);
-            }
-        });
+    // Handle navigation item clicks
+    navigationView.setNavigationItemSelectedListener(menuItem -> {
+        drawerLayout.closeDrawers();
 
-        recyclerView.setAdapter(adapter);
+        int id = menuItem.getItemId();
+        if (id == R.id.nav_settings) {
+            showSettingsDialog();
+            return true;
+        } else if (id == R.id.nav_about) {
+            showAboutDialog();
+            return true;
+        } else if (id == R.id.nav_thanks) {
+            Toast.makeText(MainActivity.this, "Thank you for using the app! — BlackboxAI", Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    });
 
-        FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
-        fabAdd.setOnClickListener(new View.OnClickListener() {
+    // Existing recycler view and fab setup here ...
+    recyclerView = findViewById(R.id.recyclerViewNotes);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    notesList = new ArrayList<>();
+    loadNotes();
+
+    adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
+    recyclerView.setAdapter(adapter);
+
+    FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
+    fabAdd.setOnClickListener(v -> showCreateNoteDialog());
+}
+ {
             @Override
             public void onClick(View view) {
                 showCreateNoteDialog();
