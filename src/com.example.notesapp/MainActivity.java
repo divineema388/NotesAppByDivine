@@ -1,5 +1,6 @@
 package com.example.notesapp;
 
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.appbar.MaterialToolbar;
