@@ -261,20 +261,31 @@ private void saveThemePreference(boolean isDark) {
     dialog.show();
 }
 
-    private void confirmDeleteNote(final int position) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Note")
-                .setMessage("Are you sure you want to delete \"" + notesList.get(position).getTitle() + "\"?")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+  private void confirmDeleteNote(final int position) {
+    if (position < 0 || position >= notesList.size()) {
+        Toast.makeText(this, "Invalid note position.", Toast.LENGTH_SHORT).show();
+        return; // Exit if the position is invalid
+    }
+
+    new AlertDialog.Builder(this)
+            .setTitle("Delete Note")
+            .setMessage("Are you sure you want to delete \"" + notesList.get(position).getTitle() + "\"?")
+            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    if (position < notesList.size()) { // Check if position is still valid
                         notesList.remove(position);
                         adapter.notifyItemRemoved(position);
                         saveNotes();
                         Toast.makeText(MainActivity.this, "Note deleted.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Note not found.", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+                }
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
+}
+
     }
 
     // Persist notes to internal file as JSON array of objects {title, content}
