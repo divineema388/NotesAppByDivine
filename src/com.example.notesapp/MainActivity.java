@@ -50,7 +50,7 @@ import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  private FrameLayout rootLayout;
+    private FrameLayout rootLayout;
     private BackgroundAnimator backgroundAnimator;
     private RecyclerView recyclerView; // Declare RecyclerView
     private NotesAdapter adapter; // Declare Adapter
