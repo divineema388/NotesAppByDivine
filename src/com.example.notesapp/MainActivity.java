@@ -81,10 +81,19 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, AboutActivity.class);
         startActivity(intent);
         return true;
-    } else if (id == R.id.nav_thanks) {
-        Toast.makeText(MainActivity.this, "Thank you for using the app! — BlackboxAI", Toast.LENGTH_LONG).show();
-        return true;
+    }  else if (id == R.id.nav_thanks) {
+    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+    emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com"));
+    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
+    // Check if there is an app to handle this intent
+    if (emailIntent.resolveActivity(getPackageManager()) != null) {
+        startActivity(emailIntent);
+    } else {
+        Toast.makeText(MainActivity.this, "No email app found.", Toast.LENGTH_SHORT).show();
     }
+    return true;
+}
+
     return false;
 });
         // RecyclerView setup
