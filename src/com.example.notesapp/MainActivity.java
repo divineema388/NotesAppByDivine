@@ -132,6 +132,23 @@ protected void onCreate(@Nullable Bundle savedInstanceState) {
         builder.show();
     }
 
+private void showSettingsDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Settings");
+    // Add settings options or info here, for now simple message
+    builder.setMessage("Settings will be available soon.");
+    builder.setPositiveButton("OK", null);
+    builder.show();
+}
+
+private void showAboutDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("About Developers");
+    builder.setMessage("This app is developed by BlackboxAI, your intelligent software engineer assistant.");
+    builder.setPositiveButton("OK", null);
+    builder.show();
+}
+
     private void showEditNoteDialog(final int position) {
     Note note = notesList.get(position);
 
