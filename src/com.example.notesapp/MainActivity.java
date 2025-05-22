@@ -1,26 +1,26 @@
 package com.example.notesapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Typeface; // Add this line
+import android.os.Bundle;
+import android.text.InputType;
+import android.text.Spannable;
+import android.text.style.StyleSpan;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.ToggleButton; // Add this line
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.text.InputType;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
