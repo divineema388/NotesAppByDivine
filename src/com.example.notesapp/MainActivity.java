@@ -70,22 +70,23 @@ public class MainActivity extends AppCompatActivity {
 
         // Handle navigation item clicks
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            drawerLayout.closeDrawers();
+    drawerLayout.closeDrawers();
 
-            int id = menuItem.getItemId();
-            if (id == R.id.nav_settings) {
-                showSettingsDialog();
-                return true;
-            } else if (id == R.id.nav_about) {
-                showAboutDialog();
-                return true;
-            } else if (id == R.id.nav_thanks) {
-                Toast.makeText(MainActivity.this, "Thank you for using the app! — BlackboxAI", Toast.LENGTH_LONG).show();
-                return true;
-            }
-            return false;
-        });
-
+    int id = menuItem.getItemId();
+    if (id == R.id.nav_settings) {
+        showSettingsDialog();
+        return true;
+    } else if (id == R.id.nav_about) {
+        // <-- Place the code here:
+        Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+        startActivity(intent);
+        return true;
+    } else if (id == R.id.nav_thanks) {
+        Toast.makeText(MainActivity.this, "Thank you for using the app! — BlackboxAI", Toast.LENGTH_LONG).show();
+        return true;
+    }
+    return false;
+});
         // RecyclerView setup
         recyclerView = findViewById(R.id.recyclerViewNotes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
