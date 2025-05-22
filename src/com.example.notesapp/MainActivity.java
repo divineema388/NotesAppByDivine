@@ -284,7 +284,7 @@ private void saveThemePreference(boolean isDark) {
             })
             .setNegativeButton("Cancel", null)
             .show();
-}
+
 
     }
 
