@@ -82,21 +82,29 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, AboutActivity.class);
         startActivity(intent);
         return true;
-    }  else if (id == R.id.nav_thanks) {
-    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-    emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com"));
-    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
-    // Check if there is an app to handle this intent
-    if (emailIntent.resolveActivity(getPackageManager()) != null) {
-        startActivity(emailIntent);
-    } else {
-        Toast.makeText(MainActivity.this, "No email app found.", Toast.LENGTH_SHORT).show();
-    }
-    return true;
+    }      }
+    return true;else if (id == R.id.nav_thanks) {
+                openGmailApp(); // Call the method here
+                return true;
 }
 
     return false;
 });
+private void openGmailApp() {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:pupchatinc@gmail.com")); // Only email apps should handle this
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thank You");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Your message goes here."); // Optional: add a message body
+
+        // Check if there is an email client available
+        if (emailIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(emailIntent);
+        } else {
+            // Handle the case where no email client is installed
+            Toast.makeText(this, "No email client installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
         // RecyclerView setup
         recyclerView = findViewById(R.id.recyclerViewNotes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
