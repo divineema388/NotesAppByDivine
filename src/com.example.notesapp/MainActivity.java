@@ -7,16 +7,17 @@ import android.view.MenuItem;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Typeface; // Add this line
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.style.StyleSpan;
+import android.view.Gravity; // Import for Gravity
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.ToggleButton; // Add this line
+import android.widget.ToggleButton;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,62 +38,56 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String FILE_NAME = "noteContent.txt.txt";
+    private static final String FILE_NAME = "noteContent.txt";
 
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private ArrayList<Note> notesList;
 
-@Override
-protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-    NavigationView navigationView = findViewById(R.id.nav_view);
-    MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-    // Setup toolbar navigation icon click to open drawer
-    topAppBar.setNavigationOnClickListener(v -> {
-        drawerLayout.openDrawer(GravityCompat.START);
-    });
-
-    // Handle navigation item clicks
-    navigationView.setNavigationItemSelectedListener(menuItem -> {
-        drawerLayout.closeDrawers();
-
-        int id = menuItem.getItemId();
-        if (id == R.id.nav_settings) {
-            showSettingsDialog();
-            return true;
-        } else if (id == R.id.nav_about) {
-            showAboutDialog();
-            return true;
-        } else if (id == R.id.nav_thanks) {
-            Toast.makeText(MainActivity.this, "Thank you for using the app! — BlackboxAI", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return false;
-    });
-
-    // Existing recycler view and fab setup here ...
-    recyclerView = findViewById(R.id.recyclerViewNotes);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    notesList = new ArrayList<>();
-    loadNotes();
-
-    adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
-    recyclerView.setAdapter(adapter);
-
-    FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
-    fabAdd.setOnClickListener(v -> showCreateNoteDialog());
- {
-            @Override
-            public void onClick(View view) {
-                showCreateNoteDialog();
-            }
+        // Setup toolbar navigation icon click to open drawer
+        topAppBar.setNavigationOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START);
         });
+
+        // Handle navigation item clicks
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            drawerLayout.closeDrawers();
+
+            int id = menuItem.getItemId();
+            if (id == R.id.nav_settings) {
+                showSettingsDialog();
+                return true;
+            } else if (id == R.id.nav_about) {
+                showAboutDialog();
+                return true;
+            } else if (id == R.id.nav_thanks) {
+                Toast.makeText(MainActivity.this, "Thank you for using the app! — BlackboxAI", Toast.LENGTH_LONG).show();
+                return true;
+            }
+            return false;
+        });
+
+        // RecyclerView setup
+        recyclerView = findViewById(R.id.recyclerViewNotes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        notesList = new ArrayList<>();
+        loadNotes();
+
+        adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
+        recyclerView.setAdapter(adapter);
+
+        FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
+        fabAdd.setOnClickListener(v -> showCreateNoteDialog()); // Corrected here
     }
 
     private void showCreateNoteDialog() {
@@ -107,29 +102,26 @@ protected void onCreate(@Nullable Bundle savedInstanceState) {
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                
-                String title = input.getText().toString().trim();
+                String title = input.getText().toString();
                 if (title.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
-                    return;
+                    return; // Do not create an empty note
                 }
-                // Check duplicate titles
-                for (Note note : notesList) {
-                    if (note.getTitle().equals(title)) {
-                        Toast.makeText(MainActivity.this, "Title already exists", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-                notesList.add(new Note(title, ""));
+                // Logic to create a new note
+                Note newNote = new Note(title, ""); // Assuming a Note constructor
+                notesList.add(newNote);
                 adapter.notifyItemInserted(notesList.size() - 1);
                 saveNotes();
-                showEditNoteDialog(notesList.size() -1);
+                showEditNoteDialog(notesList.size() - 1);
             }
         });
-        builder.setNegativeButton("Cancel", null);
 
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
+
+    // Other methods remain unchanged...
+}
+
 
 private void showSettingsDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
