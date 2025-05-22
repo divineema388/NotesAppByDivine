@@ -1,5 +1,14 @@
 package com.example.notesapp;
 
+
+import androidx.appcompat.app.AppCompatDelegate; // For AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat; // For SwitchCompat
+import android.content.SharedPreferences; // For SharedPreferences
+import android.preference.PreferenceManager; // For PreferenceManager
+import androidx.appcompat.app.AppCompatDelegate; // For AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat; // For SwitchCompat
+import android.content.SharedPreferences; // For SharedPreferences
+import android.preference.PreferenceManager; // For PreferenceManager
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
