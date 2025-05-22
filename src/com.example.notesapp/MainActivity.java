@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter adapter; // Declare Adapter
     private ArrayList<Note> notesList; // Declare Notes List
 
+private static final String FILE_NAME = "notes_data.txt"; // Example file name
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
