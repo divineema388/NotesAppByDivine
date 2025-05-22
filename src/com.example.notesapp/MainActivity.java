@@ -104,41 +104,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showEditNoteDialog(final int position) {
-        Note note = notesList.get(position);
+    Note note = notesList.get(position);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Edit Note: " + note.getTitle());
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Edit Note: " + note.getTitle());
 
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_edit_note, null, false);
-        final EditText inputContent = viewInflated.findViewById(R.id.editTextNoteContent);
-        inputContent.setText(note.getContent());
+    View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_edit_note, null, false);
+    final EditText inputContent = viewInflated.findViewById(R.id.editTextNoteContent);
+    final ToggleButton toggleBold = viewInflated.findViewById(R.id.toggleBold);
+    final ToggleButton toggleItalic = viewInflated.findViewById(R.id.toggleItalic);
 
-        builder.setView(viewInflated);
+    // Set content as Spannable to allow formatting
+    inputContent.setText(note.getContent());
+    inputContent.setSelection(inputContent.getText().length());
 
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    // Animate dialog content fade-in
+    viewInflated.setAlpha(0f);
+    viewInflated.animate().alpha(1f).setDuration(400).start();
 
-                String newContent = inputContent.getText().toString();
-                note.setContent(newContent);
-                adapter.notifyItemChanged(position);
-                saveNotes();
-                Toast.makeText(MainActivity.this, "Note saved.", Toast.LENGTH_SHORT).show();
-            }
-        });
+    // Toggle button click listeners to apply/remove formatting on selected text
+    toggleBold.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        applyStyleToSelection(inputContent, isChecked, Typeface.BOLD);
+    });
 
-        builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    toggleItalic.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        applyStyleToSelection(inputContent, isChecked, Typeface.ITALIC);
+    });
 
-                confirmDeleteNote(position);
-            }
-        });
+    builder.setView(viewInflated);
 
-        builder.setNegativeButton("Cancel", null);
+    builder.setPositiveButton("Save", (dialog, which) -> {
+        String newContent = inputContent.getText().toString();
+        note.setContent(newContent);
+        adapter.notifyItemChanged(position);
+        saveNotes();
+        Toast.makeText(MainActivity.this, "Note saved.", Toast.LENGTH_SHORT).show();
+    });
 
-        builder.show();
-    }
+    builder.setNeutralButton("Delete", (dialog, which) -> {
+        confirmDeleteNote(position);
+    });
+
+    builder.setNegativeButton("Cancel", null);
+
+    AlertDialog dialog = builder.create();
+    dialog.show();
+}
 
     private void confirmDeleteNote(final int position) {
         new AlertDialog.Builder(this)
@@ -180,6 +191,38 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to save notes", Toast.LENGTH_SHORT).show();
         }
     }
+    
+    /**
+ * Apply or remove text style (bold or italic) on selected text in EditText.
+ */
+private void applyStyleToSelection(EditText editText, boolean apply, int style) {
+    int start = editText.getSelectionStart();
+    int end = editText.getSelectionEnd();
+
+    if (start == end) {
+        // No selection: toggle style for entire text
+        start = 0;
+        end = editText.getText().length();
+    }
+
+    android.text.Spannable str = editText.getText();
+    if (apply) {
+        str.setSpan(new android.text.style.StyleSpan(style), start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    } else {
+        android.text.style.StyleSpan[] spans = str.getSpans(start, end, android.text.style.StyleSpan.class);
+        for (android.text.style.StyleSpan span : spans) {
+            if (span.getStyle() == style) {
+                int spanStart = str.getSpanStart(span);
+                int spanEnd = str.getSpanEnd(span);
+                // Remove span if it overlaps selected range
+                if (spanStart < end && spanEnd > start) {
+                    str.removeSpan(span);
+                }
+            }
+        }
+    }
+}
+
 
     private void loadNotes() {
         notesList.clear();

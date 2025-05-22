@@ -1,19 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
+<LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="12dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp">
+
+        <ToggleButton
+            android:id="@+id/toggleBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="B"
+            android:textOn="B"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:minWidth="50dp"
+            android:background="?attr/selectableItemBackground"
+            android:textColor="@android:color/black"/>
+
+        <ToggleButton
+            android:id="@+id/toggleItalic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="I"
+            android:textOn="I"
+            android:textStyle="italic"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:minWidth="50dp"
+            android:layout_marginStart="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:textColor="@android:color/black"/>
+    </LinearLayout>
+
     <EditText
         android:id="@+id/editTextNoteContent"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         android:gravity="start|top"
         android:background="@android:drawable/edit_text"
         android:padding="12dp"
         android:textSize="16sp"
         android:inputType="textMultiLine"
         android:scrollbars="vertical"/>
+</LinearLayout>
 
-</ScrollView>
