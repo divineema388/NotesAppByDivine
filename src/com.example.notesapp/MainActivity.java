@@ -1,5 +1,6 @@
 package com.example.notesapp;
 
+import android.widget.TextView;
 import android.widget.FrameLayout;
 import android.content.Intent; // For Intent
 import androidx.appcompat.app.AppCompatDelegate; // For AppCompatDelegate
