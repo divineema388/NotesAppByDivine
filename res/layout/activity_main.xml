@@ -16,6 +16,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+<TextView
+    android:id="@+id/textViewWelcome"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="WELCOME TO NOTES\n\nTAP THE + BUTTON TO CREATE A NOTE."
+    android:textSize="20sp"
+    android:textAlignment="center"
+    android:gravity="center"
+    android:textStyle="bold"
+    android:padding="24dp"
+    android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewNotes"
             android:layout_width="match_parent"

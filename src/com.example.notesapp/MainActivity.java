@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView; // Declare RecyclerView
     private NotesAdapter adapter; // Declare Adapter
     private ArrayList<Note> notesList; // Declare Notes List
+private TextView textViewWelcome;
 
 private static final String FILE_NAME = "notes_data.txt"; // Example file name
 
@@ -62,6 +63,8 @@ private static final String FILE_NAME = "notes_data.txt"; // Example file name
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+       
+       textViewWelcome = findViewById(R.id.textViewWelcome);
 
         rootLayout = findViewById(R.id.rootLayout);
 
@@ -105,8 +108,10 @@ private static final String FILE_NAME = "notes_data.txt"; // Example file name
 
         notesList = new ArrayList<>();
         loadNotes();
-
-        adapter = new NotesAdapter(notesList, position -> showEditNoteDialog(position));
+updateUI();
+adapter = new NotesAdapter(notesList, position -> {
+    showEditNoteDialog(position);
+});
         recyclerView.setAdapter(adapter);
 
         FloatingActionButton fabAdd = findViewById(R.id.fabAddNote);
@@ -154,7 +159,8 @@ private static final String FILE_NAME = "notes_data.txt"; // Example file name
                 // Logic to create a new note
                 Note newNote = new Note(title, ""); // Assuming a Note constructor
                 notesList.add(newNote);
-                adapter.notifyItemInserted(notesList.size() - 1);
+adapter.notifyItemInserted(notesList.size() - 1);
+updateUI();
                 saveNotes();
                 showEditNoteDialog(notesList.size() - 1);
             }
@@ -163,6 +169,16 @@ private static final String FILE_NAME = "notes_data.txt"; // Example file name
         builder.setNegativeButton("Cancel", null);
         builder.show();
     }
+
+private void updateUI() {
+    if (notesList.isEmpty()) {
+        textViewWelcome.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    } else {
+        textViewWelcome.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+}
 
 private void showSettingsDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -309,7 +325,8 @@ private void saveThemePreference(boolean isDark) {
                 public void onClick(DialogInterface dialog, int which) {
                     if (position < notesList.size()) { // Check if position is still valid
                         notesList.remove(position);
-                        adapter.notifyItemRemoved(position);
+adapter.notifyItemRemoved(position);
+updateUI();
                         saveNotes();
                         Toast.makeText(MainActivity.this, "Note deleted.", Toast.LENGTH_SHORT).show();
                     } else {
